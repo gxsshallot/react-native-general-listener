@@ -94,11 +94,11 @@ When trigger an event with an array of string event type `[str0, str1, ... strn]
 ```javascript
 const upperType = [str0, str1, ..., strn];
 while ( /* upperType is not empty */ ) {
-    // Pop the last element of upperType
     // Convert upperType to upperName
     if ( /* upperName is registered with registerWithSubEvent function */ ) {
         // Trigger upper event with state
     }
+    // Pop the last element of upperType
 }
 ```
 
