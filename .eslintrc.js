@@ -40,7 +40,6 @@ module.exports = {
             "classes": "never",
             "switches": "never",
         }], // require or disallow padding within blocks
-        "prefer-const": 1, // require const declarations for variables that are never reassigned after declared
         "space-before-blocks": ["error", "always"], // enforce consistent spacing before blocks
         "space-in-parens": ["error", "never"], // space-in-parens
         "space-before-function-paren": ["error", {
