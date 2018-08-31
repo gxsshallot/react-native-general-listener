@@ -14,6 +14,10 @@ export const innerEventType = '_##_inner_##_event_##_type_##_';
 
 /**
  * Register a event listener to an event type without listening to its sub event types.
+ * @param {string|array|object} type Event type.
+ * @param {function} func Event callback.
+ * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
+ * @returns {object} Listener object.
  */
 export function register(type, func, seperator = undefined) {
     const eventName = normalEventName(type, seperator);
@@ -28,6 +32,10 @@ export function register(type, func, seperator = undefined) {
 
 /**
  * Register a event listener to an event type with listening to its sub event types.
+ * @param {array} type Event type.
+ * @param {function} func Event callback.
+ * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
+ * @returns {object} Listener object.
  */
 export function registerWithSubEvent(type, func, seperator = undefined) {
     const eventName = recursiveEventName(type, seperator);
@@ -42,34 +50,38 @@ export function registerWithSubEvent(type, func, seperator = undefined) {
 
 /**
  * Unregister a event listener of an event type.
- * @param {string|array|object} type Event type, can be a string or an array of string used seperator to join or an object with json string used.
- * @param {object} listenerObj Listener object, if it is undefined, we will remove all event listeners of this event type.
+ * @param {string|array|object} type Event type.
+ * @param {object} listenerObj Listener object, if it is undefined, we will remove all.
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
 export function unregister(type, listenerObj = undefined, seperator = undefined) {
     const eventName = normalEventName(type, seperator);
-    const rEventName = recursiveEventName(type, seperator);
+    const rEventName = Array.isArray(type) ? recursiveEventName(type, seperator) : undefined;
     if (listenerObj) {
         rootNode[eventName] = (rootNode[eventName] || []).filter(item => item !== listenerObj);
-        rootNode[rEventName] = (rootNode[rEventName] || []).filter(item => item !== listenerObj);
+        if (rEventName) {
+            rootNode[rEventName] = (rootNode[rEventName] || []).filter(item => item !== listenerObj);
+        }
         listenerObj.remove();
         if (rootNode[eventName] && rootNode[eventName].length == 0) {
             delete rootNode[eventName];
         }
-        if (rootNode[rEventName] && rootNode[rEventName].length == 0) {
+        if (rEventName && rootNode[rEventName] && rootNode[rEventName].length == 0) {
             delete rootNode[rEventName];
         }
     } else {
         rootNode[eventName].forEach(obj => obj.remove());
-        rootNode[rEventName].forEach(obj => obj.remove());
         delete rootNode[eventName];
-        delete rootNode[rEventName];
+        if (rEventName) {
+            rootNode[rEventName].forEach(obj => obj.remove());
+            delete rootNode[rEventName];
+        }
     }
 }
 
 /**
  * Trigger an event type with a state param.
- * @param {string|array|object} type Event type, can be a string or an array of string used seperator to join or an object with json string used.
+ * @param {string|array|object} type Event type.
  * @param {object} state The param passed to event callback, we will add the event type in it.
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
@@ -91,7 +103,7 @@ export function trigger(type, state = undefined, seperator = undefined) {
 
 /**
  * Generate recursive event name from an event type.
- * @param {string|array|object} type Event type, can be a string or an array of string used seperator to join or an object with json string used.
+ * @param {array} type Event type.
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  * @returns {string} Event name.
  */
@@ -99,10 +111,8 @@ function recursiveEventName(type, seperator) {
     const globalHeader = '&#@!$%%$!@#&' + defaultSeperator + '1234567890987654321';
     if (Array.isArray(type)) {
         return globalHeader + type.join(seperator || defaultSeperator);
-    } else if (typeof type === 'string') {
-        return globalHeader + type;
     } else {
-        return globalHeader + JSON.stringify(type);
+        throw new Error('event type must be array of string');
     }
 }
 
