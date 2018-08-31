@@ -9,7 +9,7 @@ const globalNode = {};
 export let defaultSeperator = '$';
 
 /**
- * Inner key for current event type in state param when event listener callback is emitted.
+ * Inner key for current event type in state param object when event listener callback is emitted.
  */
 export const innerEventType = '_##_inner_##_event_##_type_##_';
 
@@ -75,7 +75,7 @@ export function unregister(type, listenerObj = undefined, seperator = undefined)
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
 export function trigger(type, state = undefined, seperator = undefined) {
-    const newState = {...state, [innerEventType]: type};
+    const newState = Object.prototype.isPrototypeOf(state) ? {...state, [innerEventType]: type} : state;
     const eventName = convertTypeToEventName(type, seperator);
     DeviceEventEmitter.emit(eventName, newState);
     if (Array.isArray(type)) {
