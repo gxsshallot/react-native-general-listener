@@ -31,7 +31,7 @@ export const registerWithSubEvent = _register.bind(this, true);
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  * @returns {object} Listener object.
  */
-function _register(includeSubEvent, type, func, seperator) {
+function _register(includeSubEvent, type, func, seperator = undefined) {
     const eventName = convertTypeToEventName(type, seperator);
     const listenerObj = DeviceEventEmitter.addListener(eventName, func);
     if (rootNode[eventName]) {
@@ -51,7 +51,7 @@ function _register(includeSubEvent, type, func, seperator) {
  * @param {object} listenerObj Listener object, if it is undefined, we will remove all event listeners of this event type.
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
-export function unregister(type, listenerObj, seperator) {
+export function unregister(type, listenerObj = undefined, seperator = undefined) {
     const eventName = convertTypeToEventName(type, seperator);
     if (listenerObj) {
         rootNode[eventName] = rootNode[eventName].filter(item => item !== listenerObj);
@@ -74,7 +74,7 @@ export function unregister(type, listenerObj, seperator) {
  * @param {object} state The param passed to event callback, we will add the event type in it.
  * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
-export function trigger(type, state, seperator) {
+export function trigger(type, state = undefined, seperator = undefined) {
     const newState = {...state, [innerEventType]: type};
     const eventName = convertTypeToEventName(type, seperator);
     DeviceEventEmitter.emit(eventName, newState);

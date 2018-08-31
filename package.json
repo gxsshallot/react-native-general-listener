@@ -1,6 +1,6 @@
 {
   "name": "react-native-general-listener",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": false,
   "description": "A general event listener for React Native.",
   "main": "index.js",
@@ -13,8 +13,7 @@
   },
   "keywords": [
     "React-Native",
-    "event",
-    "listener"
+    "event-listener"
   ],
   "author": "Xiaosong Gao",
   "license": "MIT",
