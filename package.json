@@ -1,12 +1,9 @@
 {
   "name": "react-native-general-listener",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "A general event listener for React Native.",
   "main": "index.js",
-  "scripts": {
-    "lint": "eslint index.js listener.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gaoxiaosong/react-native-general-listener"
@@ -21,9 +18,5 @@
     "url": "https://github.com/gaoxiaosong/react-native-general-listener/issues",
     "email": "gaoxiaosong06@gmail.com"
   },
-  "homepage": "https://github.com/gaoxiaosong/react-native-general-listener#readme",
-  "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "eslint": "^4.17.0"
-  }
+  "homepage": "https://github.com/gaoxiaosong/react-native-general-listener#readme"
 }
