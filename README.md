@@ -112,3 +112,7 @@ You can modify the `defaultSeperator` globally:
 ```javascript
 Listener.defaultSeperator = '#';
 ```
+
+## Reference
+
+Please see this repository: [react-native-items](https://github.com/gaoxiaosong/react-native-items).
