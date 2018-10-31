@@ -2,32 +2,14 @@ import { DeviceEventEmitter } from 'react-native';
 
 const rootNode = {};
 
-/**
- * Default seperator, you can set to modify event name connector globally.
- */
 export let defaultSeperator = '$';
 
-/**
- * Inner key for current event type in state param object when event listener callback is emitted.
- */
 export let innerEventType = '_##_inner_##_event_##_type_##_';
 
-/**
- * Register a event listener to an event type without listening to its sub event types.
- * @param {string|array|object} type Event type.
- * @param {function} func Event callback.
- * @returns {object} Listener object.
- */
 export function register(type, func) {
     return registerEvent(normalEventName(type), func);
 }
 
-/**
- * Register a event listener to an event type with listening to its sub event types.
- * @param {array} type Event type.
- * @param {function} func Event callback.
- * @returns {object} Listener object.
- */
 export function registerWithSubEvent(type, func) {
     return registerEvent(recursiveEventName(type), func);
 }
@@ -42,11 +24,6 @@ function registerEvent(eventName, func) {
     return listenerObj;
 }
 
-/**
- * Unregister a event listener of an event type.
- * @param {string|array|object} type Event type.
- * @param {object} listenerObj Listener object, if it is undefined, we will remove all.
- */
 export function unregister(type, listenerObj = undefined) {
     const eventName = normalEventName(type);
     const rEventName = recursiveEventName(type);
@@ -76,11 +53,6 @@ export function unregister(type, listenerObj = undefined) {
     }
 }
 
-/**
- * Trigger an event type with a state param.
- * @param {string|array|object} type Event type.
- * @param {object} state The param passed to event callback, we will add the event type in it.
- */
 export function trigger(type, state = undefined) {
     const newState = Object.prototype.isPrototypeOf(state) ? {...state, [innerEventType]: type} : state;
     const eventName = normalEventName(type);
@@ -95,22 +67,12 @@ export function trigger(type, state = undefined) {
     }
 }
 
-/**
- * Generate recursive event name from an event type.
- * @param {array} type Event type.
- * @returns {string} Event name.
- */
 function recursiveEventName(type) {
     const globalHeader = ['&#@!$%%$!@#&', '1234567890987654321'];
     const types = Array.isArray(type) ? type : [type];
     return [...globalHeader, ...types].join(defaultSeperator);
 }
 
-/**
- * Generate normal event name from an event type.
- * @param {string|array|object} type Event type, can be a string or an array of string used seperator to join or an object with json string used.
- * @returns {string} Event name.
- */
 function normalEventName(type) {
     if (Array.isArray(type)) {
         return type.join(defaultSeperator);

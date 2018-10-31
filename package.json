@@ -4,6 +4,7 @@
   "private": false,
   "description": "A general event listener for React Native.",
   "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gaoxiaosong/react-native-general-listener"
