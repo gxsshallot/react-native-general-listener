@@ -1,6 +1,6 @@
 {
   "name": "react-native-general-listener",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "A general event listener for React Native.",
   "main": "index.js",
