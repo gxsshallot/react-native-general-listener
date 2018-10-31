@@ -46,11 +46,10 @@ We have two register function:
 * register
 * registerWithSubEvent
 
-They both have three parameters:
+They both have two parameters:
 
 * type: Event type.
 * func: Event callback, will be called when the event is triggered.
-* seperator: A seperator for event type to generate event name, default is `defaultSeperator`. We recommend to modify seperator globally, not specially.
 
 Example:
 
@@ -71,7 +70,6 @@ The function `unregister` has three parameters:
 
 * type: Event type.
 * listenerObj: Listener object which is the returned value of `register` or `registerWithSubEvent`. If it is `undefined`, we will remove all event listeners of the event type.
-* seperator: A seperator for event type to generate event name, default is `defaultSeperator`. We recommend to modify seperator globally, not specially.
 
 Example:
 
@@ -90,7 +88,6 @@ The function `trigger` has three parameters:
 
 * type: Event type.
 * state: Event param. It can be an object, a number, a boolean or any other data type.
-* seperator: A seperator for event type to generate event name, default is `defaultSeperator`. We recommend to modify seperator globally, not specially.
 
 When trigger an event with an array of string event type `[str0, str1, ... strn]`, we will find its parent event types to see if they use `registerWithSubEvent` function:
 
@@ -112,8 +109,9 @@ There are two constant in the module:
 * defaultSeperator: Default seperator, used as connector of event type to generate event name. Default is `'$'`。
 * innerEventType: Inner event type key, when event is triggered, the event type will be set into event param if event param is an object. This key is `'_##_inner_##_event_##_type_##_'` to avoid key duplication in event param.
 
-You can modify the `defaultSeperator` globally:
+You can modify them globally:
 
 ```javascript
 Listener.defaultSeperator = '#';
+Listener.innerEventType = '123321';
 ```

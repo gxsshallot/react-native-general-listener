@@ -10,17 +10,16 @@ export let defaultSeperator = '$';
 /**
  * Inner key for current event type in state param object when event listener callback is emitted.
  */
-export const innerEventType = '_##_inner_##_event_##_type_##_';
+export let innerEventType = '_##_inner_##_event_##_type_##_';
 
 /**
  * Register a event listener to an event type without listening to its sub event types.
  * @param {string|array|object} type Event type.
  * @param {function} func Event callback.
- * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  * @returns {object} Listener object.
  */
-export function register(type, func, seperator = undefined) {
-    const eventName = normalEventName(type, seperator);
+export function register(type, func) {
+    const eventName = normalEventName(type);
     const listenerObj = DeviceEventEmitter.addListener(eventName, func);
     if (rootNode[eventName]) {
         rootNode[eventName].push(listenerObj);
@@ -34,11 +33,10 @@ export function register(type, func, seperator = undefined) {
  * Register a event listener to an event type with listening to its sub event types.
  * @param {array} type Event type.
  * @param {function} func Event callback.
- * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  * @returns {object} Listener object.
  */
-export function registerWithSubEvent(type, func, seperator = undefined) {
-    const eventName = recursiveEventName(type, seperator);
+export function registerWithSubEvent(type, func) {
+    const eventName = recursiveEventName(type);
     const listenerObj = DeviceEventEmitter.addListener(eventName, func);
     if (rootNode[eventName]) {
         rootNode[eventName].push(listenerObj);
@@ -52,11 +50,10 @@ export function registerWithSubEvent(type, func, seperator = undefined) {
  * Unregister a event listener of an event type.
  * @param {string|array|object} type Event type.
  * @param {object} listenerObj Listener object, if it is undefined, we will remove all.
- * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
-export function unregister(type, listenerObj = undefined, seperator = undefined) {
-    const eventName = normalEventName(type, seperator);
-    const rEventName = Array.isArray(type) ? recursiveEventName(type, seperator) : undefined;
+export function unregister(type, listenerObj = undefined) {
+    const eventName = normalEventName(type);
+    const rEventName = Array.isArray(type) ? recursiveEventName(type) : undefined;
     if (listenerObj) {
         rootNode[eventName] = (rootNode[eventName] || []).filter(item => item !== listenerObj);
         if (rEventName) {
@@ -83,16 +80,15 @@ export function unregister(type, listenerObj = undefined, seperator = undefined)
  * Trigger an event type with a state param.
  * @param {string|array|object} type Event type.
  * @param {object} state The param passed to event callback, we will add the event type in it.
- * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  */
-export function trigger(type, state = undefined, seperator = undefined) {
+export function trigger(type, state = undefined) {
     const newState = Object.prototype.isPrototypeOf(state) ? {...state, [innerEventType]: type} : state;
-    const eventName = normalEventName(type, seperator);
+    const eventName = normalEventName(type);
     DeviceEventEmitter.emit(eventName, newState);
     if (Array.isArray(type)) {
         const upperType = [...type];
         while (upperType.length > 0) {
-            const upperEventName = recursiveEventName(upperType, seperator);
+            const upperEventName = recursiveEventName(upperType);
             if (rootNode[upperEventName]) {
                 DeviceEventEmitter.emit(upperEventName, newState);
             }
@@ -104,13 +100,12 @@ export function trigger(type, state = undefined, seperator = undefined) {
 /**
  * Generate recursive event name from an event type.
  * @param {array} type Event type.
- * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  * @returns {string} Event name.
  */
-function recursiveEventName(type, seperator) {
+function recursiveEventName(type) {
     const globalHeader = '&#@!$%%$!@#&' + defaultSeperator + '1234567890987654321';
     if (Array.isArray(type)) {
-        return globalHeader + type.join(seperator || defaultSeperator);
+        return globalHeader + type.join(defaultSeperator);
     } else {
         throw new Error('event type must be array of string');
     }
@@ -119,12 +114,11 @@ function recursiveEventName(type, seperator) {
 /**
  * Generate normal event name from an event type.
  * @param {string|array|object} type Event type, can be a string or an array of string used seperator to join or an object with json string used.
- * @param {string} seperator A seperator to generate event name, default is defaultSeperator.
  * @returns {string} Event name.
  */
-function normalEventName(type, seperator) {
+function normalEventName(type) {
     if (Array.isArray(type)) {
-        return type.join(seperator || defaultSeperator);
+        return type.join(defaultSeperator);
     } else if (typeof type === 'string') {
         return type;
     } else {
