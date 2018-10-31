@@ -1,6 +1,11 @@
 # react-native-general-listener
 
-[Chinese README](README-zh_CN.md)
+[![npm version](https://img.shields.io/npm/v/react-native-general-listener.svg?style=flat)](https://www.npmjs.com/package/react-native-general-listener)
+
+It is a wrapper of `DeviceEventListener` to support following functions:
+
+* Event level to make event name more readable.
+* Subscribe all sub level event and unsubscribe.
 
 ## Install
 
@@ -54,7 +59,7 @@ this.loginListener1 = Listener.register('LoginEvent', this.loginFn);
 this.loginListener2 = Listener.register(['TestApp', 'Login', userId], this.loginFn);
 ```
 
-The only difference between `register` and `registerWithSubEvent` is: the second one register event type with all child event types, is only valid when an array style event type.
+The only difference between `register` and `registerWithSubEvent` is: the second one register event type with all sub level event types.
 
 The function will return an object to used when `unregister` event type.
 
@@ -112,7 +117,3 @@ You can modify the `defaultSeperator` globally:
 ```javascript
 Listener.defaultSeperator = '#';
 ```
-
-## Reference
-
-Please see this repository: [react-native-items](https://github.com/gaoxiaosong/react-native-items).
