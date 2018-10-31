@@ -19,14 +19,7 @@ export let innerEventType = '_##_inner_##_event_##_type_##_';
  * @returns {object} Listener object.
  */
 export function register(type, func) {
-    const eventName = normalEventName(type);
-    const listenerObj = DeviceEventEmitter.addListener(eventName, func);
-    if (rootNode[eventName]) {
-        rootNode[eventName].push(listenerObj);
-    } else {
-        rootNode[eventName] = [listenerObj];
-    }
-    return listenerObj;
+    return registerEvent(normalEventName(type), func);
 }
 
 /**
@@ -36,7 +29,10 @@ export function register(type, func) {
  * @returns {object} Listener object.
  */
 export function registerWithSubEvent(type, func) {
-    const eventName = recursiveEventName(type);
+    return registerEvent(recursiveEventName(type), func);
+}
+
+function registerEvent(eventName, func) {
     const listenerObj = DeviceEventEmitter.addListener(eventName, func);
     if (rootNode[eventName]) {
         rootNode[eventName].push(listenerObj);
@@ -53,23 +49,27 @@ export function registerWithSubEvent(type, func) {
  */
 export function unregister(type, listenerObj = undefined) {
     const eventName = normalEventName(type);
-    const rEventName = Array.isArray(type) ? recursiveEventName(type) : undefined;
+    const rEventName = recursiveEventName(type);
     if (listenerObj) {
-        rootNode[eventName] = (rootNode[eventName] || []).filter(item => item !== listenerObj);
-        if (rEventName) {
-            rootNode[rEventName] = (rootNode[rEventName] || []).filter(item => item !== listenerObj);
+        if (rootNode[eventName]) {
+            rootNode[eventName] = rootNode[eventName].filter(item => item !== listenerObj);
+            if (rootNode[eventName].length == 0) {
+                delete rootNode[eventName];
+            }
+        }
+        if (rootNode[rEventName]) {
+            rootNode[rEventName] = rootNode[rEventName].filter(item => item !== listenerObj);
+            if (rootNode[rEventName].length == 0) {
+                delete rootNode[rEventName];
+            }
         }
         listenerObj.remove();
-        if (rootNode[eventName] && rootNode[eventName].length == 0) {
+    } else {
+        if (rootNode[eventName]) {
+            rootNode[eventName].forEach(obj => obj.remove());
             delete rootNode[eventName];
         }
-        if (rEventName && rootNode[rEventName] && rootNode[rEventName].length == 0) {
-            delete rootNode[rEventName];
-        }
-    } else {
-        rootNode[eventName].forEach(obj => obj.remove());
-        delete rootNode[eventName];
-        if (rEventName) {
+        if (rootNode[rEventName]) {
             rootNode[rEventName].forEach(obj => obj.remove());
             delete rootNode[rEventName];
         }
@@ -85,15 +85,13 @@ export function trigger(type, state = undefined) {
     const newState = Object.prototype.isPrototypeOf(state) ? {...state, [innerEventType]: type} : state;
     const eventName = normalEventName(type);
     DeviceEventEmitter.emit(eventName, newState);
-    if (Array.isArray(type)) {
-        const upperType = [...type];
-        while (upperType.length > 0) {
-            const upperEventName = recursiveEventName(upperType);
-            if (rootNode[upperEventName]) {
-                DeviceEventEmitter.emit(upperEventName, newState);
-            }
-            upperType.pop();
+    const upperType = Array.isArray(type) ? [...type] : [type];
+    while (upperType.length > 0) {
+        const upperEventName = recursiveEventName(upperType);
+        if (rootNode[upperEventName]) {
+            DeviceEventEmitter.emit(upperEventName, newState);
         }
+        upperType.pop();
     }
 }
 
@@ -103,12 +101,9 @@ export function trigger(type, state = undefined) {
  * @returns {string} Event name.
  */
 function recursiveEventName(type) {
-    const globalHeader = '&#@!$%%$!@#&' + defaultSeperator + '1234567890987654321';
-    if (Array.isArray(type)) {
-        return globalHeader + type.join(defaultSeperator);
-    } else {
-        throw new Error('event type must be array of string');
-    }
+    const globalHeader = ['&#@!$%%$!@#&', '1234567890987654321'];
+    const types = Array.isArray(type) ? type : [type];
+    return [...globalHeader, ...types].join(defaultSeperator);
 }
 
 /**
