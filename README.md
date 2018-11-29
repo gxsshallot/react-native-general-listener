@@ -2,6 +2,8 @@
 
 [![npm version](https://img.shields.io/npm/v/react-native-general-listener.svg?style=flat)](https://www.npmjs.com/package/react-native-general-listener)
 
+[中文说明](https://www.jianshu.com/p/43c2f39992b4)
+
 It is a wrapper of `DeviceEventListener` to support following functions:
 
 * Event level to make event name more readable.
