@@ -1,6 +1,7 @@
 # react-native-general-listener
 
 [![npm version](https://img.shields.io/npm/v/react-native-general-listener.svg?style=flat)](https://www.npmjs.com/package/react-native-general-listener)
+[![Build Status](https://travis-ci.org/gaoxiaosong/react-native-general-listener.svg?branch=master)](https://travis-ci.org/gaoxiaosong/react-native-general-listener)
 
 [中文说明](https://www.jianshu.com/p/43c2f39992b4)
 
